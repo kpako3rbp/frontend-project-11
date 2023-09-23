@@ -1,6 +1,6 @@
 # webpack-package
 [![Maintainability](https://api.codeclimate.com/v1/badges/3c9a4f47edb4d16bb744/maintainability)](https://codeclimate.com/github/kpako3rbp/frontend-project-11/maintainability)
-[![github action status](https://github.com/hexlet-boilerplates/webpack-package/workflows/Node%20CI/badge.svg)](https://github.com/kpako3rbp/frontend-project-11/actions)
+[![hexlet-check](https://github.com/kpako3rbp/frontend-project-11/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/kpako3rbp/frontend-project-11/actions/workflows/hexlet-check.yml)
 
 ## Setup
 
