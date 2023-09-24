@@ -2,10 +2,10 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/3c9a4f47edb4d16bb744/maintainability)](https://codeclimate.com/github/kpako3rbp/frontend-project-11/maintainability)
 [![hexlet-check](https://github.com/kpako3rbp/frontend-project-11/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/kpako3rbp/frontend-project-11/actions/workflows/hexlet-check.yml)
 
-## Setup
+## Link
 
 ```sh
-make install
+https://frontend-project-11-ap38.vercel.app/
 ```
 
 ## Run

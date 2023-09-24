@@ -4,7 +4,8 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "test": "jest --colors"
+    "test": "jest --colors",
+    "start": "webpack serve --mode development"
   },
   "repository": {
     "type": "git",
