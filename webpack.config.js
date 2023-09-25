@@ -1,7 +1,16 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
 export default {
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(dirname, 'dist'),
+    filename: 'bundle.js',
+  },
   mode: process.env.NODE_ENV || 'development',
   module: {
     rules: [
@@ -28,6 +37,10 @@ export default {
         test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/,
         use: 'file-loader',
       },
+      {
+        test: /\.html$/,
+        use: 'html-loader',
+      },
     ],
   },
   plugins: [
@@ -35,7 +48,4 @@ export default {
       template: 'index.html',
     }),
   ],
-  output: {
-    clean: true,
-  },
 };
