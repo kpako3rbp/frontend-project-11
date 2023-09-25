@@ -4,6 +4,6 @@
 import '../index.html';
 import './style.scss';
 import 'bootstrap';
+import app from './app.js';
 
-//  init();
-console.log('Hello, World!');
+app();
