@@ -9,7 +9,7 @@ export default () => {
     form: document.querySelector('form.rss-form'),
     input: document.querySelector('#url-input'),
     submit: document.querySelector('button[type="submit"]'),
-    errorsContainer: document.querySelector('p.feedback'),
+    feedbackContainer: document.querySelector('p.feedback'),
   };
 
   const defaultLang = 'ru';
