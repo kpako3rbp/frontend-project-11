@@ -1,10 +1,13 @@
-const renderErrors = (errors, elements) => {
+const renderErrors = (errors, i18n, elements) => {
+  elements.errorsContainer.innerHTML = '';
   if (errors.length <= 0) {
     elements.errorsContainer.innerHTML = '';
+    elements.input.classList.remove('is-invalid');
   }
-  errors.forEach((error) => {
-    const errorText = document.createTextNode(error);
+  Object.entries(errors).forEach(([_, path]) => {
+    const errorText = document.createTextNode(i18n.t(path));
     elements.errorsContainer.appendChild(errorText);
+    elements.input.classList.add('is-invalid');
   });
 };
 
@@ -19,10 +22,10 @@ const handleProcessState = (state, elements) => {
   }
 };
 
-const initView = (elements) => (path, value, prevValue) => {
+const initView = (elements, i18n) => (path, value, prevValue) => {
   switch (path) {
     case 'form.errors':
-      renderErrors(value, elements);
+      renderErrors(value, i18n, elements);
       break;
     case 'form.processState':
       handleProcessState(value, elements);
