@@ -1,8 +1,14 @@
 import i18next from 'i18next';
 import * as yup from 'yup';
 import onChange from 'on-change';
+import axios from 'axios';
 import resources from './locales/index.js';
 import initView from './view.js';
+import parseRss from './parser.js';
+
+const routes = {
+  proxyPath: () => 'https://allorigins.hexlet.app/get',
+};
 
 export default () => {
   const elements = {
@@ -16,11 +22,11 @@ export default () => {
 
   const state = {
     form: {
-			processState: 'filling',
+      processState: 'filling',
       valid: true,
       fields: {
         this: '',
-      },      
+      },
       feeds: [],
       errors: [],
     },
@@ -61,10 +67,28 @@ export default () => {
       .validate(watchedState.form.fields)
       .then(() => {
         watchedState.form.feeds.push(watchedState.form.fields.this);
-        watchedState.form.fields.this = '';
+        //watchedState.form.fields.this = '';
         watchedState.form.errors = [];
-        watchedState.form.processState = 'success';
+
         watchedState.form.valid = true;
+
+        axios
+          .get(routes.proxyPath(), {
+            params: {
+              url: watchedState.form.fields.this,
+            },
+          })
+          .then((response) => {
+            watchedState.form.processState = 'success';
+            parseRss(response);
+						console.log(response, 'RESPONSE')
+            //console.log(response, 'data', watchedState.form.fields.this, 'watchedState.form.fields.this');
+          })
+          .catch((error) => {
+            watchedState.form.processState = 'failed';
+            //console.log(watchedState, 'watchedState', watchedState.form.fields.this, 'watchedState.form.fields.this');
+            console.error(error, 'ERROR!!!');
+          });
       })
       .catch((error) => {
         watchedState.form.processState = 'failed';
