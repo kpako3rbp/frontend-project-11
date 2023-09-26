@@ -16,11 +16,11 @@ export default () => {
 
   const state = {
     form: {
+			processState: 'filling',
       valid: true,
       fields: {
         this: '',
-      },
-      processState: 'filling',
+      },      
       feeds: [],
       errors: [],
     },
@@ -69,7 +69,6 @@ export default () => {
       .catch((error) => {
         watchedState.form.processState = 'failed';
         watchedState.form.valid = false;
-        console.log('watchedState.form.errors', error);
 
         watchedState.form.errors = { ...watchedState.form.errors, [error.type]: `errors.validation.${error.type}` };
       });

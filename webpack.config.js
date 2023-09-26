@@ -11,6 +11,10 @@ export default {
     path: path.resolve(dirname, 'dist'),
     filename: 'bundle.js',
   },
+  devServer: {
+    port: 8080,
+    watchFiles: ['./index.html', './src/**/*'],
+  },
   mode: process.env.NODE_ENV || 'development',
   module: {
     rules: [
