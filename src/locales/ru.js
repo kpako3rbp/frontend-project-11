@@ -5,6 +5,7 @@ export default {
     },
     posts: 'Посты',
     feeds: 'Фиды',
+    show: 'Просмотр',
     success: 'RSS успешно загружен',
     error: {
       validation: {

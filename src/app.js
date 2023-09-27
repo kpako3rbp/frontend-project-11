@@ -43,7 +43,7 @@ export default () => {
     submit: document.querySelector('button[type="submit"]'),
     feedbackContainer: document.querySelector('p.feedback'),
 		feedsContainer: document.querySelector('.feeds'),
-		postsContainer: document.querySelector('.post'),
+		postsContainer: document.querySelector('.posts'),
   };
 
   const defaultLang = 'ru';
