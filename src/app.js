@@ -2,12 +2,38 @@ import i18next from 'i18next';
 import * as yup from 'yup';
 import onChange from 'on-change';
 import axios from 'axios';
+import uniqueId from 'lodash/uniqueId.js';
 import resources from './locales/index.js';
 import initView from './view.js';
 import parseRss from './parser.js';
 
 const routes = {
-  proxyPath: () => 'https://allorigins.hexlet.app/get',
+  proxyPath: (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${url}`,
+};
+
+const rssValidateSchema = (feeds) => {
+  yup.setLocale({
+    string: {
+      url: () => ({ key: 'error.validation.url' }),
+    },
+    mixed: {
+      notOneOf: () => ({ key: 'error.validation.notOneOf' }),
+    },
+  });
+
+  return yup.string().url().notOneOf(feeds);
+};
+
+const setIdsForRssData = (rssData) => {
+  const { feed, items } = rssData;
+  feed.id = uniqueId();
+
+  items.forEach((item) => {
+    item.id = uniqueId();
+    item.feedId = feed.id;
+  });
+
+  return { feed, items };
 };
 
 export default () => {
@@ -16,6 +42,8 @@ export default () => {
     input: document.querySelector('#url-input'),
     submit: document.querySelector('button[type="submit"]'),
     feedbackContainer: document.querySelector('p.feedback'),
+		feedsContainer: document.querySelector('.feeds'),
+		postsContainer: document.querySelector('.post'),
   };
 
   const defaultLang = 'ru';
@@ -24,20 +52,14 @@ export default () => {
     form: {
       processState: 'filling',
       valid: true,
-      fields: {
-        this: '',
-      },
+      error: null,
+    },
+    validLinks: [],
+    data: {
       feeds: [],
-      errors: [],
+      posts: [],
     },
   };
-
-  yup.setLocale({
-    string: {
-      url: () => ({ key: 'errors.validation.url' }),
-      notOneOf: () => ({ key: 'errors.validation.notOneOf' }),
-    },
-  });
 
   const i18n = i18next.createInstance();
   i18n.init({
@@ -46,55 +68,64 @@ export default () => {
     resources,
   });
 
-  const watchedState = onChange(state, initView(elements, i18n));
-
-  elements.input.addEventListener('input', (e) => {
-    e.preventDefault();
-    watchedState.form.processState = 'filling';
-    const { value } = e.target;
-    watchedState.form.fields.this = value.trim();
-  });
+  const watchedState = onChange(state, initView(elements, state, i18n));
 
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
     watchedState.form.processState = 'sending';
 
-    const schema = yup.object().shape({
-      this: yup.string().url().notOneOf(watchedState.form.feeds),
-    });
+    const formData = new FormData(e.target);
+    const inputValue = formData.get('url').trim();
 
-    schema
-      .validate(watchedState.form.fields)
-      .then(() => {
-        watchedState.form.feeds.push(watchedState.form.fields.this);
-        //watchedState.form.fields.this = '';
-        watchedState.form.errors = [];
-
+    rssValidateSchema(watchedState.validLinks)
+      .validate(inputValue)
+      .then((link) => {
+        watchedState.form.error = null;
         watchedState.form.valid = true;
+        //watchedState.validLinks.push(link);
+        return link;
+      })
+      .then((validLink) => {
+        watchedState.form.processState = 'sending';
+        return axios.get(routes.proxyPath(validLink));
+      })
+      .then((response) => {
+				console.log(response, 'response')
+        if (response.status !== 200) {
+          throw new Error(`networkError: ${response.status}`);
+        }
+        const rssData = parseRss(response.data.contents);
+        if (!rssData) {
+          throw new Error('parseError');
+        } else {
+					console.log(rssData, 'rssData111111111111')
+          const { feed, items } = setIdsForRssData(rssData);
+          watchedState.data.feeds.push(feed);
+          watchedState.data.posts.push(...items);
+          watchedState.form.processState = 'success';
 
-        axios
-          .get(routes.proxyPath(), {
-            params: {
-              url: watchedState.form.fields.this,
-            },
-          })
-          .then((response) => {
-            watchedState.form.processState = 'success';
-            parseRss(response);
-						console.log(response, 'RESPONSE')
-            //console.log(response, 'data', watchedState.form.fields.this, 'watchedState.form.fields.this');
-          })
-          .catch((error) => {
-            watchedState.form.processState = 'failed';
-            //console.log(watchedState, 'watchedState', watchedState.form.fields.this, 'watchedState.form.fields.this');
-            console.error(error, 'ERROR!!!');
-          });
+					watchedState.validLinks.push(inputValue);
+        }
+
+        console.log(state, 'STATE!!!!!!!!!');
       })
       .catch((error) => {
-        watchedState.form.processState = 'failed';
+        watchedState.form.processState = 'error';
         watchedState.form.valid = false;
-
-        watchedState.form.errors = { ...watchedState.form.errors, [error.type]: `errors.validation.${error.type}` };
+				
+        switch (error.name) {
+          case 'ValidationError':
+            watchedState.form.error = error.message;
+            break;
+          case 'Error':
+            watchedState.form.error = { [error.message]: `error.${error.message}` };
+            break;
+          case 'AxiosError':
+            watchedState.form.error = { [error.name]: `error.${error.name}` };
+            break;
+          default:
+            watchedState.form.error = { unknown: `error.unknown` };
+        }
       });
   });
 };
