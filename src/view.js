@@ -89,13 +89,13 @@ const renderPosts = (posts, i18n, elements) => {
 
     const a = document.createElement('a');
     a.className = 'fw-bold';
-		a.setAttribute('href', link);
-		a.setAttribute('data-id', id)
+    a.setAttribute('href', link);
+    a.setAttribute('data-id', id);
     a.textContent = title;
 
     const button = document.createElement('button');
     button.className = 'btn btn-outline-primary btn-sm';
-		button.setAttribute('data-id', id)
+    button.setAttribute('data-id', id);
     button.textContent = i18n.t('show');
 
     li.append(a, button);
@@ -103,50 +103,17 @@ const renderPosts = (posts, i18n, elements) => {
   });
 };
 
-/* const renderFeedback = (error, i18n, elements) => {
-  const { feedbackContainer, input } = elements;
-  feedbackContainer.innerHTML = '';
-
-  if (!error) {
-    input.classList.remove('is-invalid');
-    feedbackContainer.classList.remove('text-danger');
-    feedbackContainer.classList.add('text-success');
-    feedbackContainer.innerHTML = i18n.t('success');
-    return;
-  }
-
-  input.classList.add('is-invalid');
-  feedbackContainer.classList.add('text-danger');
-  feedbackContainer.classList.remove('text-success');
-  Object.entries(error).forEach(([, path]) => {
-    const errorText = document.createTextNode(i18n.t(path));
-    feedbackContainer.appendChild(errorText);
-  });
-}; */
-
-/* const handleProcessState = (state, i18n, elements) => {
-  switch (state) {
-    case 'success':
-      elements.form.reset();
-      elements.input.focus();
-      renderSuccessMessage(i18n, elements);
-      break;
-    default:
-      break;
-  }
-}; */
-
 const initView = (elements, state, i18n) => (path, value) => {
   switch (value) {
     case 'error':
       renderError(state.form.error, i18n, elements);
       break;
     case 'success':
-			elements.form.reset();
+      elements.form.reset();
       elements.input.focus();
       renderSuccessMessage(i18n, elements);
-			renderFeeds(state.data.feeds, i18n, elements);
-			renderPosts(state.data.posts, i18n, elements);
+      renderFeeds(state.data.feeds, i18n, elements);
+      renderPosts(state.data.posts, i18n, elements);
       break;
     case 'filling':
       break;

@@ -42,8 +42,8 @@ export default () => {
     input: document.querySelector('#url-input'),
     submit: document.querySelector('button[type="submit"]'),
     feedbackContainer: document.querySelector('p.feedback'),
-		feedsContainer: document.querySelector('.feeds'),
-		postsContainer: document.querySelector('.posts'),
+    feedsContainer: document.querySelector('.feeds'),
+    postsContainer: document.querySelector('.posts'),
   };
 
   const defaultLang = 'ru';
@@ -82,7 +82,6 @@ export default () => {
       .then((link) => {
         watchedState.form.error = null;
         watchedState.form.valid = true;
-        //watchedState.validLinks.push(link);
         return link;
       })
       .then((validLink) => {
@@ -90,7 +89,6 @@ export default () => {
         return axios.get(routes.proxyPath(validLink));
       })
       .then((response) => {
-				console.log(response, 'response')
         if (response.status !== 200) {
           throw new Error(`networkError: ${response.status}`);
         }
@@ -98,21 +96,19 @@ export default () => {
         if (!rssData) {
           throw new Error('parseError');
         } else {
-					console.log(rssData, 'rssData111111111111')
+          console.log(rssData, 'rssData111111111111');
           const { feed, items } = setIdsForRssData(rssData);
           watchedState.data.feeds.push(feed);
           watchedState.data.posts.push(...items);
           watchedState.form.processState = 'success';
 
-					watchedState.validLinks.push(inputValue);
+          watchedState.validLinks.push(inputValue);
         }
-
-        console.log(state, 'STATE!!!!!!!!!');
       })
       .catch((error) => {
         watchedState.form.processState = 'error';
         watchedState.form.valid = false;
-				
+
         switch (error.name) {
           case 'ValidationError':
             watchedState.form.error = error.message;
@@ -124,7 +120,7 @@ export default () => {
             watchedState.form.error = { [error.name]: `error.${error.name}` };
             break;
           default:
-            watchedState.form.error = { unknown: `error.unknown` };
+            watchedState.form.error = { unknown: 'error.unknown' };
         }
       });
   });

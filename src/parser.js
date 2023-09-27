@@ -12,13 +12,15 @@ export default (stringHtml) => {
   const descriptionEl = channel.querySelector('description');
   const itemEls = channel.querySelectorAll('item');
 
-  const getItems = (itemEls) => {
-    return Array.from(itemEls).reduce((acc, item) => {
+  const getItems = (els) => {
+    const items = Array.from(els).reduce((acc, item) => {
       const title = item.querySelector('title').textContent;
       const link = item.querySelector('link').textContent;
       acc.push({ title, link });
       return acc;
     }, []);
+
+    return items;
   };
 
   return {
