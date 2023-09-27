@@ -4,13 +4,10 @@ const renderError = (error, i18n, elements) => {
   feedbackContainer.classList.add('text-danger');
   feedbackContainer.classList.remove('text-success');
 
-  if (!error) {
-    return;
-  }
+  console.log('РЕНДЕР ГДЕ!!!?? ERROR ГДЕ??', error);
 
   Object.entries(error).forEach(([, path]) => {
-    const errorText = document.createTextNode(i18n.t(path));
-    feedbackContainer.appendChild(errorText);
+    feedbackContainer.innerHTML = i18n.t(path);
     input.classList.add('is-invalid');
   });
 };
@@ -105,15 +102,15 @@ const renderPosts = (posts, i18n, elements) => {
 
 const initView = (elements, state, i18n) => (path, value) => {
   switch (value) {
-    case 'error':
-      renderError(state.form.error, i18n, elements);
-      break;
     case 'success':
       elements.form.reset();
       elements.input.focus();
       renderSuccessMessage(i18n, elements);
       renderFeeds(state.data.feeds, i18n, elements);
       renderPosts(state.data.posts, i18n, elements);
+      break;
+    case 'error':
+      renderError(state.form.error, i18n, elements);
       break;
     case 'filling':
       break;

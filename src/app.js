@@ -36,6 +36,17 @@ const setIdsForRssData = (rssData) => {
   return { feed, items };
 };
 
+/* const updateData = (state, interval) => {
+  const { validLinks, data } = state;
+
+	const update = () => {
+		const promises = validLinks.forEach((link) => {
+			axios.get(routes.proxyPath(link))
+			.then(())
+		})
+	}
+}; */
+
 export default () => {
   const elements = {
     form: document.querySelector('form.rss-form'),
@@ -106,9 +117,6 @@ export default () => {
         }
       })
       .catch((error) => {
-        watchedState.form.processState = 'error';
-        watchedState.form.valid = false;
-
         switch (error.name) {
           case 'ValidationError':
             watchedState.form.error = error.message;
@@ -122,6 +130,9 @@ export default () => {
           default:
             watchedState.form.error = { unknown: 'error.unknown' };
         }
+
+				watchedState.form.processState = 'error';
+        watchedState.form.valid = false;
       });
   });
 };
