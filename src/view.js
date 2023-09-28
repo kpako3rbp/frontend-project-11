@@ -25,16 +25,12 @@ const renderSendingMessage = (i18n, elements) => {
   feedbackContainer.innerHTML = i18n.t('sending');
 };
 
-const renderFeeds = (feeds, i18n, elements) => {
-  if (feeds.length <= 0) {
-    return;
-  }
-  const { feedsContainer } = elements;
-  feedsContainer.innerHTML = '';
+const generateContainer = (container, title) => {
+  container.innerHTML = '';
 
   const cardBorderEl = document.createElement('div');
   cardBorderEl.className = 'card border-0';
-  feedsContainer.appendChild(cardBorderEl);
+  container.appendChild(cardBorderEl);
 
   const cardBodyEl = document.createElement('div');
   cardBodyEl.className = 'card-body';
@@ -43,11 +39,22 @@ const renderFeeds = (feeds, i18n, elements) => {
   const h2 = document.createElement('h2');
   h2.className = 'card-title h4';
   cardBodyEl.appendChild(h2);
-  h2.textContent = i18n.t('feeds');
+  h2.textContent = title;
 
   const ul = document.createElement('ul');
   ul.className = 'list-group border-0 rounded-0';
   cardBorderEl.appendChild(ul);
+
+  return ul;
+};
+
+const renderFeeds = (state, i18n, elements) => {
+  const { feeds } = state.data;
+  if (feeds.length <= 0) {
+    return;
+  }
+  const { feedsContainer } = elements;
+  const ul = generateContainer(feedsContainer, i18n.t('feeds'));
 
   feeds.forEach(({ title, description }) => {
     const li = document.createElement('li');
@@ -66,36 +73,22 @@ const renderFeeds = (feeds, i18n, elements) => {
   });
 };
 
-const renderPosts = (posts, i18n, elements) => {
+const renderPosts = (state, i18n, elements) => {
+  const { posts } = state.data;
   if (posts.length <= 0) {
     return;
   }
+
   const { postsContainer } = elements;
-  postsContainer.innerHTML = '';
-
-  const cardBorderEl = document.createElement('div');
-  cardBorderEl.className = 'card border-0';
-  postsContainer.appendChild(cardBorderEl);
-
-  const cardBodyEl = document.createElement('div');
-  cardBodyEl.className = 'card-body';
-  cardBorderEl.appendChild(cardBodyEl);
-
-  const h2 = document.createElement('h2');
-  h2.className = 'card-title h4';
-  cardBodyEl.appendChild(h2);
-  h2.textContent = i18n.t('posts');
-
-  const ul = document.createElement('ul');
-  ul.className = 'list-group border-0 rounded-0';
-  cardBorderEl.appendChild(ul);
+  const ul = generateContainer(postsContainer, i18n.t('posts'));
 
   posts.forEach(({ title, link, id }) => {
     const li = document.createElement('li');
     li.className = 'list-group-item d-flex justify-content-between align-items-start border-0 border-end-0';
 
     const a = document.createElement('a');
-    a.className = 'fw-bold';
+    const className = state.uiState.readPostsId.includes(id) ? 'fw-normal link-secondary' : 'fw-bold';
+    a.className = className;
     a.setAttribute('href', link);
     a.setAttribute('data-id', id);
     a.textContent = title;
@@ -112,25 +105,17 @@ const renderPosts = (posts, i18n, elements) => {
   });
 };
 
-/* const renderModalContent = (data, elements) => {
-  const { modal } = elements;
-  const modalTitle = modal.querySelector('.modal-title');
-  const modalBody = modal.querySelector('.modal-body');
-  const readMoreBtn = modal.querySelector('.btn');
-
-  const { title, description, link } = data;
-  modalTitle.textContent = title;
-  modalBody.textContent = description;
-  readMoreBtn.setAttribute('href', link);
-}; */
+const renderReadPosts = (state) => {
+  const { id } = state.uiState.currentPost;
+  const currentPostEl = document.querySelector(`[data-id="${id}"]`);
+  currentPostEl.className = 'fw-normal link-secondary';
+};
 
 const renderModalContent = (state, elements) => {
   const { modal } = elements;
   const modalTitle = modal.querySelector('.modal-title');
   const modalBody = modal.querySelector('.modal-body');
   const readMoreBtn = modal.querySelector('.btn');
-
-	//const currentPost = state.data.posts.find((post) => (post.id === state.uiState.currentPostId));
 
   const { title, description, link } = state.uiState.currentPost;
   modalTitle.textContent = title;
@@ -144,8 +129,8 @@ const initView = (elements, state, i18n) => (path, value) => {
       elements.form.reset();
       elements.input.focus();
       renderSuccessMessage(i18n, elements);
-      renderFeeds(state.data.feeds, i18n, elements);
-      renderPosts(state.data.posts, i18n, elements);
+      renderFeeds(state, i18n, elements);
+      renderPosts(state, i18n, elements);
       break;
     case 'error':
       renderError(state.form.error, i18n, elements);
@@ -154,11 +139,12 @@ const initView = (elements, state, i18n) => (path, value) => {
       renderSendingMessage(i18n, elements);
       break;
     case 'updating':
-      renderPosts(state.data.posts, i18n, elements);
+      renderPosts(state, i18n, elements);
       break;
     case 'modalOpen':
       renderModalContent(state, elements);
-			break;
+      renderReadPosts(state);
+      break;
     default:
       break;
   }

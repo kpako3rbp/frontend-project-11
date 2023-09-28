@@ -171,9 +171,9 @@ export default () => {
   elements.modal.addEventListener('shown.bs.modal', function (e) {
     const button = e.relatedTarget;
     const currentPostId = button.dataset.id;
-    watchedState.uiState.readPostsId.push(currentPostId);
-
 		const currentPost = watchedState.data.posts.find((post) => (post.id === currentPostId));
+
+    watchedState.uiState.readPostsId.push(currentPostId);
     watchedState.uiState.currentPost = currentPost;
 		watchedState.uiState.modal = 'modalOpen';
   });
