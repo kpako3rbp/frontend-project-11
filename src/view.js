@@ -103,11 +103,39 @@ const renderPosts = (posts, i18n, elements) => {
     const button = document.createElement('button');
     button.className = 'btn btn-outline-primary btn-sm';
     button.setAttribute('data-id', id);
+    button.setAttribute('data-bs-toggle', 'modal');
+    button.setAttribute('data-bs-target', '#modal');
     button.textContent = i18n.t('show');
 
     li.append(a, button);
     ul.appendChild(li);
   });
+};
+
+/* const renderModalContent = (data, elements) => {
+  const { modal } = elements;
+  const modalTitle = modal.querySelector('.modal-title');
+  const modalBody = modal.querySelector('.modal-body');
+  const readMoreBtn = modal.querySelector('.btn');
+
+  const { title, description, link } = data;
+  modalTitle.textContent = title;
+  modalBody.textContent = description;
+  readMoreBtn.setAttribute('href', link);
+}; */
+
+const renderModalContent = (state, elements) => {
+  const { modal } = elements;
+  const modalTitle = modal.querySelector('.modal-title');
+  const modalBody = modal.querySelector('.modal-body');
+  const readMoreBtn = modal.querySelector('.btn');
+
+	//const currentPost = state.data.posts.find((post) => (post.id === state.uiState.currentPostId));
+
+  const { title, description, link } = state.uiState.currentPost;
+  modalTitle.textContent = title;
+  modalBody.textContent = description;
+  readMoreBtn.setAttribute('href', link);
 };
 
 const initView = (elements, state, i18n) => (path, value) => {
@@ -128,6 +156,9 @@ const initView = (elements, state, i18n) => (path, value) => {
     case 'updating':
       renderPosts(state.data.posts, i18n, elements);
       break;
+    case 'modalOpen':
+      renderModalContent(state, elements);
+			break;
     default:
       break;
   }

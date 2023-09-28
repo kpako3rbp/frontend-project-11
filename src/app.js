@@ -26,11 +26,9 @@ const rssValidateSchema = (feeds) => {
 
 const setIdsForRssData = (rssData) => {
   const { feed, items } = rssData;
-  // feed.id = uniqueId();
 
   items.forEach((item) => {
     item.id = uniqueId();
-    // item.feedId = feed.id;
   });
 
   return { feed, items };
@@ -84,6 +82,7 @@ export default () => {
     feedbackContainer: document.querySelector('p.feedback'),
     feedsContainer: document.querySelector('.feeds'),
     postsContainer: document.querySelector('.posts'),
+    modal: document.querySelector('#modal'),
   };
 
   const defaultLang = 'ru';
@@ -98,6 +97,11 @@ export default () => {
     data: {
       feeds: [],
       posts: [],
+    },
+    uiState: {
+      readPostsId: [],
+      currentPost: null,
+			modal: '',
     },
   };
 
@@ -162,6 +166,21 @@ export default () => {
         watchedState.form.processState = 'error';
         watchedState.form.valid = false;
       });
+  });
+
+  elements.modal.addEventListener('shown.bs.modal', function (e) {
+    const button = e.relatedTarget;
+    const currentPostId = button.dataset.id;
+    watchedState.uiState.readPostsId.push(currentPostId);
+
+		const currentPost = watchedState.data.posts.find((post) => (post.id === currentPostId));
+    watchedState.uiState.currentPost = currentPost;
+		watchedState.uiState.modal = 'modalOpen';
+  });
+
+	elements.modal.addEventListener('hidden.bs.modal', function () {
+		watchedState.uiState.currentPostId = null;
+		watchedState.uiState.modal = 'modalClose';
   });
 
   updateData(watchedState);

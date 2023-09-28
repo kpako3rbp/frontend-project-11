@@ -15,8 +15,9 @@ export default (stringHtml) => {
   const getItems = (els) => {
     const items = Array.from(els).reduce((acc, item) => {
       const title = item.querySelector('title').textContent;
+			const description = item.querySelector('description').textContent;
       const link = item.querySelector('link').textContent;
-      acc.push({ title, link });
+      acc.push({ title, description, link });
       return acc;
     }, []);
 
