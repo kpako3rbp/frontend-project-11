@@ -8,7 +8,7 @@ import initView from './view.js';
 import parseRss from './parser.js';
 
 const routes = {
-  proxyPath: (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${url}`,
+  proxyPath: (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`,
 };
 
 const rssValidateSchema = (feeds) => {
@@ -28,7 +28,7 @@ const setIdsForRssData = (rssData) => {
   const { feed, items } = rssData;
   // feed.id = uniqueId();
 
-  items.map((item) => {
+  items.forEach((item) => {
     item.id = uniqueId();
     // item.feedId = feed.id;
   });
@@ -49,9 +49,7 @@ const updateData = (watchedState) => {
 
   const { posts } = watchedState.data;
 
-  const promises = validLinks.map((link) => {
-    return axios.get(routes.proxyPath(link));
-  });
+  const promises = validLinks.map((link) => axios.get(routes.proxyPath(link)));
 
   Promise.all(promises)
     .then((responses) => {
@@ -63,11 +61,8 @@ const updateData = (watchedState) => {
 
         watchedState.form.processState = 'updating';
         const { items } = setIdsForRssData(newRssData);
-        const newItems = items.filter((item) => {
-          return !posts.some((post) => item.title === post.title);
-        });
+        const newItems = items.filter((item) => !posts.some((post) => item.title === post.title));
 
-				console.log(newItems, 'new', newItems.length)
         posts.unshift(...newItems);
       });
     })

@@ -26,9 +26,9 @@ const renderSendingMessage = (i18n, elements) => {
 };
 
 const renderFeeds = (feeds, i18n, elements) => {
-	if (feeds.length <= 0) {
-		return;
-	}
+  if (feeds.length <= 0) {
+    return;
+  }
   const { feedsContainer } = elements;
   feedsContainer.innerHTML = '';
 
@@ -67,9 +67,9 @@ const renderFeeds = (feeds, i18n, elements) => {
 };
 
 const renderPosts = (posts, i18n, elements) => {
-	if (posts.length <= 0) {
-		return;
-	}
+  if (posts.length <= 0) {
+    return;
+  }
   const { postsContainer } = elements;
   postsContainer.innerHTML = '';
 
