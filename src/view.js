@@ -4,8 +4,6 @@ const renderError = (error, i18n, elements) => {
   feedbackContainer.classList.add('text-danger');
   feedbackContainer.classList.remove('text-success');
 
-  console.log('РЕНДЕР ГДЕ!!!?? ERROR ГДЕ??', error);
-
   Object.entries(error).forEach(([, path]) => {
     feedbackContainer.innerHTML = i18n.t(path);
     input.classList.add('is-invalid');
@@ -21,7 +19,16 @@ const renderSuccessMessage = (i18n, elements) => {
   feedbackContainer.innerHTML = i18n.t('success');
 };
 
+const renderSendingMessage = (i18n, elements) => {
+  const { feedbackContainer } = elements;
+  feedbackContainer.innerHTML = '';
+  feedbackContainer.innerHTML = i18n.t('sending');
+};
+
 const renderFeeds = (feeds, i18n, elements) => {
+	if (feeds.length <= 0) {
+		return;
+	}
   const { feedsContainer } = elements;
   feedsContainer.innerHTML = '';
 
@@ -60,6 +67,9 @@ const renderFeeds = (feeds, i18n, elements) => {
 };
 
 const renderPosts = (posts, i18n, elements) => {
+	if (posts.length <= 0) {
+		return;
+	}
   const { postsContainer } = elements;
   postsContainer.innerHTML = '';
 
@@ -112,9 +122,11 @@ const initView = (elements, state, i18n) => (path, value) => {
     case 'error':
       renderError(state.form.error, i18n, elements);
       break;
-    case 'filling':
-      break;
     case 'sending':
+      renderSendingMessage(i18n, elements);
+      break;
+    case 'updating':
+      renderPosts(state.data.posts, i18n, elements);
       break;
     default:
       break;

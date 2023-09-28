@@ -26,26 +26,60 @@ const rssValidateSchema = (feeds) => {
 
 const setIdsForRssData = (rssData) => {
   const { feed, items } = rssData;
-  feed.id = uniqueId();
+  // feed.id = uniqueId();
 
-  items.forEach((item) => {
+  items.map((item) => {
     item.id = uniqueId();
-    item.feedId = feed.id;
+    // item.feedId = feed.id;
   });
 
   return { feed, items };
 };
 
-/* const updateData = (state, interval) => {
-  const { validLinks, data } = state;
+const updateData = (watchedState) => {
+  watchedState.form.processState = 'filling';
+  const { validLinks } = watchedState;
 
-	const update = () => {
-		const promises = validLinks.forEach((link) => {
-			axios.get(routes.proxyPath(link))
-			.then(())
-		})
-	}
-}; */
+  if (validLinks.length <= 0) {
+    setTimeout(() => {
+      updateData(watchedState);
+    }, 5000);
+    return;
+  }
+
+  const { posts } = watchedState.data;
+
+  const promises = validLinks.map((link) => {
+    return axios.get(routes.proxyPath(link));
+  });
+
+  Promise.all(promises)
+    .then((responses) => {
+      responses.map((response) => {
+        const newRssData = parseRss(response.data.contents);
+        if (!newRssData) {
+          throw new Error('Error while parsing RSS');
+        }
+
+        watchedState.form.processState = 'updating';
+        const { items } = setIdsForRssData(newRssData);
+        const newItems = items.filter((item) => {
+          return !posts.some((post) => item.title === post.title);
+        });
+
+				console.log(newItems, 'new', newItems.length)
+        posts.unshift(...newItems);
+      });
+    })
+    .catch((error) => {
+      throw new Error(error);
+    })
+    .finally(() => {
+      setTimeout(() => {
+        updateData(watchedState);
+      }, 5000);
+    });
+};
 
 export default () => {
   const elements = {
@@ -107,10 +141,9 @@ export default () => {
         if (!rssData) {
           throw new Error('parseError');
         } else {
-          console.log(rssData, 'rssData111111111111');
           const { feed, items } = setIdsForRssData(rssData);
-          watchedState.data.feeds.push(feed);
-          watchedState.data.posts.push(...items);
+          watchedState.data.feeds.unshift(feed);
+          watchedState.data.posts.unshift(...items);
           watchedState.form.processState = 'success';
 
           watchedState.validLinks.push(inputValue);
@@ -131,8 +164,10 @@ export default () => {
             watchedState.form.error = { unknown: 'error.unknown' };
         }
 
-				watchedState.form.processState = 'error';
+        watchedState.form.processState = 'error';
         watchedState.form.valid = false;
       });
   });
+
+  updateData(watchedState);
 };
