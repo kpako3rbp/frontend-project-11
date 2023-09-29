@@ -172,14 +172,14 @@ export default () => {
     const button = e.relatedTarget;
     const currentPostId = button.dataset.id;
 		const currentPost = watchedState.data.posts.find((post) => (post.id === currentPostId));
-
-    watchedState.uiState.readPostsId.push(currentPostId);
-    watchedState.uiState.currentPost = currentPost;
-		watchedState.uiState.modal = 'modalOpen';
+		  
+    watchedState.uiState.currentPost = currentPost;		
+		watchedState.uiState.readPostsId.push(currentPostId);
+		watchedState.uiState.modal = 'modalOpen';  
   });
 
-	elements.modal.addEventListener('hidden.bs.modal', function () {
-		watchedState.uiState.currentPostId = null;
+	elements.modal.addEventListener('hidden.bs.modal', function () {		
+		watchedState.uiState.currentPost = null;		
 		watchedState.uiState.modal = 'modalClose';
   });
 

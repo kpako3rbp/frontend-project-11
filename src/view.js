@@ -121,6 +121,8 @@ const renderModalContent = (state, elements) => {
   modalTitle.textContent = title;
   modalBody.textContent = description;
   readMoreBtn.setAttribute('href', link);
+
+	renderReadPosts(state);
 };
 
 const initView = (elements, state, i18n) => (path, value) => {
@@ -142,8 +144,9 @@ const initView = (elements, state, i18n) => (path, value) => {
       renderPosts(state, i18n, elements);
       break;
     case 'modalOpen':
+			console.log(state, 'STATE!22323')
       renderModalContent(state, elements);
-      renderReadPosts(state);
+      //renderReadPosts(state);
       break;
     default:
       break;
