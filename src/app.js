@@ -35,13 +35,14 @@ const setIdsForRssData = (rssData) => {
 };
 
 const updateData = (watchedState) => {
+  const interval = 5000;
   watchedState.form.processState = 'filling';
   const { validLinks } = watchedState;
 
   if (validLinks.length <= 0) {
     setTimeout(() => {
       updateData(watchedState);
-    }, 5000);
+    }, interval);
     return;
   }
 
@@ -70,7 +71,7 @@ const updateData = (watchedState) => {
     .finally(() => {
       setTimeout(() => {
         updateData(watchedState);
-      }, 5000);
+      }, interval);
     });
 };
 
@@ -101,7 +102,7 @@ export default () => {
     uiState: {
       readPostsId: [],
       currentPost: null,
-			modal: '',
+      modal: '',
     },
   };
 
@@ -168,21 +169,21 @@ export default () => {
       });
   });
 
-  elements.modal.addEventListener('show.bs.modal', function (e) {
+  elements.modal.addEventListener('show.bs.modal', (e) => {
     const button = e.relatedTarget;
     const currentPostId = button.dataset.id;
-		const currentPost = watchedState.data.posts.find((post) => (post.id === currentPostId));
-		  
-    watchedState.uiState.currentPost = currentPost;	
-		if (!watchedState.uiState.readPostsId.includes(currentPostId)) {
-			watchedState.uiState.readPostsId.push(currentPostId);
-		}		
-		watchedState.uiState.modal = 'modalOpen';  
+    const currentPost = watchedState.data.posts.find((post) => post.id === currentPostId);
+
+    watchedState.uiState.currentPost = currentPost;
+    if (!watchedState.uiState.readPostsId.includes(currentPostId)) {
+      watchedState.uiState.readPostsId.push(currentPostId);
+    }
+    watchedState.uiState.modal = 'modalOpen';
   });
 
-	elements.modal.addEventListener('hidden.bs.modal', function () {		
-		watchedState.uiState.currentPost = null;		
-		watchedState.uiState.modal = 'modalClose';
+  elements.modal.addEventListener('hidden.bs.modal', () => {
+    watchedState.uiState.currentPost = null;
+    watchedState.uiState.modal = 'modalClose';
   });
 
   updateData(watchedState);

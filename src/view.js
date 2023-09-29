@@ -122,7 +122,7 @@ const renderModalContent = (state, elements) => {
   modalBody.textContent = description;
   readMoreBtn.setAttribute('href', link);
 
-	renderReadPosts(state);
+  renderReadPosts(state);
 };
 
 const initView = (elements, state, i18n) => (path, value) => {
