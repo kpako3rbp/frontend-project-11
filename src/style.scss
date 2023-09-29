@@ -1,7 +1,14 @@
 /* @import "../node_modules/bootstrap/dist/css/bootstrap-grid.min.css";
 @import "../node_modules/bootstrap/dist/css/bootstrap-utilities.min.css"; */
-@import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+@import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 .text-muted {
-    color: #6c757d !important;
+  color: #6c757d !important;
+}
+
+/* Убираем анимацию модального окна Bootstrap */
+.modal.fade .modal-dialog {
+  transition: none; /* Убираем анимацию перехода */
+  transform: none; /* Убираем смещение */
+  opacity: 1; /* Убираем прозрачность */
 }
