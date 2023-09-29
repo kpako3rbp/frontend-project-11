@@ -53,7 +53,7 @@ const updateData = (watchedState) => {
 
   Promise.all(promises)
     .then((responses) => {
-      responses.map((response) => {
+      responses.forEach((response) => {
         const newRssData = parseRss(response.data.contents);
         if (!newRssData) {
           throw new Error('Error while parsing RSS');
