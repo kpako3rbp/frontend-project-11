@@ -10,11 +10,12 @@ export default {
     sending: 'Идет отправка...',
     error: {
       validation: {
+        required: 'Не должно быть пустым',
         url: 'Ссылка должна быть валидным URL',
         notOneOf: 'RSS уже существует',
       },
       parseError: 'Ресурс не содержит валидный RSS',
-      AxiosError: 'Ошибка сети, попробуйте еще раз',
+      AxiosError: 'Ошибка сети',
       unknown: 'Неизвестная ошибка',
     },
   },

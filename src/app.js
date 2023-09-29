@@ -18,10 +18,11 @@ const rssValidateSchema = (feeds) => {
     },
     mixed: {
       notOneOf: () => ({ key: 'error.validation.notOneOf' }),
+      required: () => ({ key: 'error.validation.required' }),
     },
   });
 
-  return yup.string().url().notOneOf(feeds);
+  return yup.string().required().url().notOneOf(feeds);
 };
 
 const setIdsForRssData = (rssData) => {
