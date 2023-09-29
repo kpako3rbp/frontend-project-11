@@ -6,9 +6,4 @@
   color: #6c757d !important;
 }
 
-/* Убираем анимацию модального окна Bootstrap */
-.modal.fade .modal-dialog {
-  transition: none; /* Убираем анимацию перехода */
-  transform: none; /* Убираем смещение */
-  opacity: 1; /* Убираем прозрачность */
-}
+

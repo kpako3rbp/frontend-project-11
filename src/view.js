@@ -144,9 +144,7 @@ const initView = (elements, state, i18n) => (path, value) => {
       renderPosts(state, i18n, elements);
       break;
     case 'modalOpen':
-			console.log(state, 'STATE!22323')
       renderModalContent(state, elements);
-      //renderReadPosts(state);
       break;
     default:
       break;
